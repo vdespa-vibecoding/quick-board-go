@@ -2,6 +2,9 @@
 import React, { useState } from "react";
 import { Column as ColumnType } from "../types/kanban";
 import Card from "./Card";
+import { useDroppable } from "@dnd-kit/core";
+import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import SortableCard from "./SortableCard";
 
 interface ColumnProps {
   column: ColumnType;
@@ -26,6 +29,14 @@ const Column: React.FC<ColumnProps> = ({
   const [editedTitle, setEditedTitle] = useState(column.title);
   const [isAddingTask, setIsAddingTask] = useState(false);
   const [newTaskTitle, setNewTaskTitle] = useState("");
+
+  const { setNodeRef } = useDroppable({
+    id: column.id,
+    data: {
+      type: 'column',
+      column
+    }
+  });
 
   const handleEditSave = () => {
     if (editedTitle.trim() && editedTitle !== column.title) {
@@ -58,8 +69,11 @@ const Column: React.FC<ColumnProps> = ({
   };
 
   return (
-    <div className="bg-kanban-column rounded-md w-72 flex-shrink-0 flex flex-col">
-      <div className="bg-kanban-columnHeader p-3 rounded-t-md border-b border-gray-300 flex justify-between items-center">
+    <div 
+      className="bg-gray-100 rounded-md w-72 flex-shrink-0 flex flex-col"
+      ref={setNodeRef}
+    >
+      <div className="bg-gray-200 p-3 rounded-t-md border-b border-gray-300 flex justify-between items-center">
         {isEditing ? (
           <input
             type="text"
@@ -74,7 +88,7 @@ const Column: React.FC<ColumnProps> = ({
           <div className="flex items-center justify-between w-full">
             <h2 className="font-semibold text-gray-700 flex items-center" onClick={() => setIsEditing(true)}>
               {column.title}
-              <span className="ml-2 bg-gray-200 text-gray-700 text-xs font-medium px-2 py-0.5 rounded-full">
+              <span className="ml-2 bg-gray-300 text-gray-700 text-xs font-medium px-2 py-0.5 rounded-full">
                 {column.tasks.length}
               </span>
             </h2>
@@ -89,14 +103,20 @@ const Column: React.FC<ColumnProps> = ({
         )}
       </div>
       <div className="p-2 flex-grow overflow-y-auto max-h-[calc(100vh-180px)]">
-        {column.tasks.map((task) => (
-          <Card 
-            key={task.id} 
-            task={task} 
-            onEditTitle={onEditTaskTitle}
-            onRemove={onRemoveTask}
-          />
-        ))}
+        <SortableContext 
+          items={column.tasks.map(task => task.id)}
+          strategy={verticalListSortingStrategy}
+        >
+          {column.tasks.map((task) => (
+            <SortableCard
+              key={task.id}
+              task={task}
+              onEditTitle={onEditTaskTitle}
+              onRemove={onRemoveTask}
+              columnId={column.id}
+            />
+          ))}
+        </SortableContext>
       </div>
       <div className="p-2 border-t border-gray-200">
         {isAddingTask ? (
@@ -126,7 +146,7 @@ const Column: React.FC<ColumnProps> = ({
           </div>
         ) : (
           <button 
-            className="w-full text-left text-gray-500 text-sm py-1 px-2 hover:bg-gray-100 rounded-md transition-colors"
+            className="w-full text-left text-gray-500 text-sm py-1 px-2 hover:bg-gray-200 rounded-md transition-colors"
             onClick={() => setIsAddingTask(true)}
           >
             + Add a card

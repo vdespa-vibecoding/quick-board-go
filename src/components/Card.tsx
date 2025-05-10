@@ -51,7 +51,10 @@ const Card: React.FC<CardProps> = ({ task, onEditTitle, onRemove }) => {
         <div className="flex justify-between">
           <h3 
             className="font-medium text-gray-800"
-            onClick={() => setIsEditing(true)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsEditing(true);
+            }}
           >
             {task.title}
           </h3>
