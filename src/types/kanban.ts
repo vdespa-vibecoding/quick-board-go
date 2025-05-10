@@ -2,15 +2,14 @@
 export interface Task {
   id: string;
   title: string;
-  description: string;
-  priority?: 'low' | 'medium' | 'high';
-  dueDate?: string;
-  tags?: string[];
+  column_id: string;
+  order: number;
 }
 
 export interface Column {
   id: string;
   title: string;
+  order: number;
   tasks: Task[];
 }
 
