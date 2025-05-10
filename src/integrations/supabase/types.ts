@@ -9,7 +9,59 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      cards: {
+        Row: {
+          column_id: string
+          created_at: string
+          id: string
+          order: number
+          title: string
+        }
+        Insert: {
+          column_id: string
+          created_at?: string
+          id?: string
+          order: number
+          title: string
+        }
+        Update: {
+          column_id?: string
+          created_at?: string
+          id?: string
+          order?: number
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cards_column_id_fkey"
+            columns: ["column_id"]
+            isOneToOne: false
+            referencedRelation: "columns"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      columns: {
+        Row: {
+          created_at: string
+          id: string
+          order: number
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          order: number
+          title: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          order?: number
+          title?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
