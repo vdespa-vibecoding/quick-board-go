@@ -1,7 +1,6 @@
 
 import React, { useState } from "react";
 import { Column as ColumnType } from "../types/kanban";
-import Card from "./Card";
 import { useDroppable } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import SortableCard from "./SortableCard";
